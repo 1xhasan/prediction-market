@@ -40,3 +40,5 @@ coverage/
 # Miscellaneous
 *.swp
 *.swo
+
+bun.lock

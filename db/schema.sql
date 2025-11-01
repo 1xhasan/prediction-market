@@ -1,0 +1,18 @@
+-- market.sql
+CREATE TABLE markets (
+  id SERIAL PRIMARY KEY,
+  question TEXT NOT NULL,
+  q_yes DOUBLE PRECISION DEFAULT 0,
+  q_no DOUBLE PRECISION DEFAULT 0,
+  b DOUBLE PRECISION DEFAULT 100,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE trades (
+  id SERIAL PRIMARY KEY,
+  market_id INT REFERENCES markets(id),
+  outcome VARCHAR(10) CHECK (outcome IN ('yes', 'no')),
+  delta DOUBLE PRECISION NOT NULL,
+  cost DOUBLE PRECISION NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
