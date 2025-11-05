@@ -16,3 +16,12 @@ CREATE TABLE trades (
   cost DOUBLE PRECISION NOT NULL,
   created_at TIMESTAMP DEFAULT NOW()
 );
+
+
+CREATE TABLE IF NOT EXIST users (
+  id SERIAL PRIMARY KEY,
+  username TEXT UNIQUE,
+  email TEXT UNIQUE,
+  password TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
+);

@@ -2,11 +2,77 @@ import express from "express";
 import { pool } from "./db";
 import { costToBuy, getPrices } from "./lmsr";
 import { Market } from "./market";
+import { hasUncaughtExceptionCaptureCallback } from "process";
+import { Message } from "@solana/web3.js";
 
 const app = express();
 app.use(express.json());
 
-app.post("/market", async (req, res) => {
+
+app.post("/user/signin", async (req, res) => {
+
+
+  try {
+  const {username, password} = req.body;
+  const result = await pool.query("SELECT * FROM users WHERE username = $1 AND password=$2",[username, password]);
+
+  if(result.rows.length>0) {
+    res.status(200).json({message: "Something went wrong"});
+  } else {
+    res.status(401).json({Message: "Username or password is incorrect"});
+  }
+
+
+  }catch(err) {
+    console.log(err);
+    res.status(500).json({Message : "Something went wrong"});
+  }
+
+});
+
+app.post("/user/signup", async (req, res) => {
+
+
+ try {
+  const {username, email, password} = req.body;
+  await pool.query( 
+    "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
+    [username, email, password]
+  );
+
+  return res.json({Message : "User inserted successfully"});
+
+ } catch(err) {
+  console.log(err);
+  res.status(500).json({Message : "Something went wrong"});
+ }
+
+});
+
+
+
+app.post("admin/result" , async (require, resp) => {
+
+});
+
+app.post("/user/merge", async (req, res) => {
+
+});
+
+app.post("/user/split", async (req, res) => {
+
+});
+
+app.post("/user/claim", async (req, res) => {
+
+});
+
+app.post("/user/onramp", async (req, res) => {
+
+});
+
+
+app.post("admin/market", async (req, res) => {
   const { question, b } = req.body;
   const result = await pool.query(
     "INSERT INTO markets (question, b) VALUES ($1, $2) RETURNING *",
