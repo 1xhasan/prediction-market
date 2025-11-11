@@ -24,15 +24,15 @@ app.post("/user/signin", async (req, res) => {
   const result = await pool.query("SELECT * FROM users WHERE username = $1 AND password=$2",[username, password]);
   console.log("db connected. ");
   if(result.rows.length>0) {
-    res.status(200).json({message: "user has been logged in successfully"});
+    return res.status(200).json({message: "user has been logged in successfully"});
   } else {
-    res.status(401).json({Message: "Username or password is incorrect"});
+    return res.status(401).json({Message: "Username or password is incorrect"});
   }
 
 
   }catch(err) {
     console.log(err);
-    res.status(500).json({Message : "Something went wrong"});
+    return res.status(500).json({Message : "Something went wrong"});
   }
 
 });
@@ -57,7 +57,7 @@ console.log('Application connected to DB:', result.rows[0].current_database);
 
  } catch(err) {
   console.log(err);
-  res.status(500).json({Message : "Something went wrong"});
+  return res.status(500).json({Message : "Something went wrong"});
  }
 
 });
@@ -116,7 +116,8 @@ app.post("/user/load", async (require, resp) => {
 
     const fetchUser = await pool.query("SELECT * from users where id=$1", [user_id]);
     if(fetchUser.rows.length === 0) {
-      resp.status(404).json({error: "User not found"});
+      console.error("USer Not found")
+      return resp.status(404).json({error: "User not found"});
     } 
     const user = fetchUser.rows[0];
 
@@ -124,14 +125,14 @@ app.post("/user/load", async (require, resp) => {
     const result = await pool.query("UPDATE users set balance = $1 where id=$2", [updatedBalance, user_id]);
 
     console.log("User has been loaded successfully", result);
-    resp.status(201).json({Message: `User has been loaded successfully ${result.rows[0]}`});
+    return resp.status(201).json({Message: `User has been loaded successfully ${result.rows[0]}`});
 
   } catch(err) {
     console.log("Error Occurred:: ", err);
     // resp.status()
     const dbError = handleDatabaseError(err as DatabaseError);
     console.log("err", err , "dbError", dbError);
-    resp.status(dbError.status).json({ message: dbError.message, detail: dbError.detail });
+    return resp.status(dbError.status).json({ message: dbError.message, detail: dbError.detail });
  
 
   }
@@ -212,7 +213,7 @@ app.post("/trade", async (req, res) => {
 
     const dbError = handleDatabaseError(err as DatabaseError);
     console.log("err", err , "dbError", dbError);
-    res.status(dbError.status).json({ message: dbError.message, detail: dbError.detail });
+    return res.status(dbError.status).json({ message: dbError.message, detail: dbError.detail });
  
 
   }
